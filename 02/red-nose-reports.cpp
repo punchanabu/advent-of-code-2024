@@ -20,7 +20,6 @@ int main() {
     }
 
     int cnt = 0;
-    int sus = 0;
     for (int i = 0; i < reports.size(); i++) {
         bool decr = true;
         bool incr = true;
