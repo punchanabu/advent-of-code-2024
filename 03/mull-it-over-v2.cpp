@@ -1,66 +1,72 @@
 #include <bits/stdc++.h>
-
 using namespace std;
 
 int main() {
-    string seq = "";
-    string line;
-
+    string seq, line;
     while (getline(cin, line)) {
         seq += line;
     }
 
-    int state = 0;
-    int sum = 0;
-    int a = 0;
-    int b = 0;
     bool trigger = true;
-    for (int i = 0; i < seq.length(); i++) {
-        if (seq.substr(i, 3) == "do(" && seq[i + 3] == ')') {
+    long long sum = 0;
+
+    for (int i = 0; i < (int)seq.size(); i++) {
+        if (i + 4 <= (int)seq.size() && seq.substr(i, 4) == "do()") {
             trigger = true;
-            i += 4; 
+            i += 3;
             continue;
         }
-
-        if (seq.substr(i, 6) == "don't(" && seq[i + 6] == ')') {
+        if (i + 7 <= (int)seq.size() && seq.substr(i, 7) == "don't()") {
             trigger = false;
-            i += 7; 
+            i += 6; 
             continue;
         }
 
-        if (seq[i] == 'm' && state == 0 && trigger) {
-            state = 1;
-        } 
-        else if (seq[i] == 'u' && state == 1) {
-            state = 2;
-        } 
-        else if (seq[i] == 'l' && state == 2) {
-            state = 3;
-        } 
-        else if (seq[i] == '(' && state == 3) {
-            state = 4;
-            a = 0; 
-            b = 0;
-        } 
-        else if (isdigit(seq[i]) && state == 4) {
-            a = a * 10 + (seq[i] - '0'); 
-        } 
-        else if (seq[i] == ',' && state == 4) {
-            state = 5; 
-        } 
-        else if (isdigit(seq[i]) && state == 5) {
-            b = b * 10 + (seq[i] - '0');
-        } 
-        else if (seq[i] == ')' && state == 5) {
+        if (trigger && i + 4 <= (int)seq.size() && seq.substr(i,4) == "mul(") {
+            int j = i + 4; 
+
+            long long a = 0;
+            bool valid = true;
+            bool found = false;
+
+            while (j < (int)seq.size() && isdigit((unsigned char)seq[j])) {
+                a = a * 10 + (seq[j] - '0');
+                j++;
+                found = true;
+            }
+            
+            if (!found) {
+                continue;
+            }
+
+            if (j >= (int)seq.size() || seq[j] != ',') {
+                continue;
+            }
+            j++;
+
+            long long b = 0;
+            found = false;
+            while (j < (int)seq.size() && isdigit((unsigned char)seq[j])) {
+                b = b * 10 + (seq[j] - '0');
+                j++;
+                found = true;
+            }
+
+            if (!found) {
+                continue;
+            }
+
+            if (j >= (int)seq.size() || seq[j] != ')') {
+                continue;
+            }
+
             sum += (a * b);
-            state = 0;
-        } 
-        else {
-            state = 0;
+
+            i = j;
         }
     }
 
-    cout << sum << endl;
+    cout << sum << "\n";
 
     return 0;
 }
